@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{F8EAC254-BCFD-4539-9BBA-2A4C9421AD21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bussines", "Bussines\Bussines.csproj", "{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F8EAC254-BCFD-4539-9BBA-2A4C9421AD21} = {F8EAC254-BCFD-4539-9BBA-2A4C9421AD21}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{F8EAC254-BCFD-4539-9BBA-2A4C9421AD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8EAC254-BCFD-4539-9BBA-2A4C9421AD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8EAC254-BCFD-4539-9BBA-2A4C9421AD21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

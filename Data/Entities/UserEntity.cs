@@ -13,5 +13,7 @@ public class UserEntity
     public string LastName { get; set; } = null!;
     [Required]
     public string Email { get; set; } = null!;
+    [Required]
+    public string UserRole { get; set; } = null!;
 }
 

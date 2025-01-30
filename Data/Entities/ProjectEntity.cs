@@ -9,12 +9,14 @@ public class ProjectEntity
     public int Id { get; set; }
     [Required]
     public string Title { get; set; } = null!;
-    
+    [Required]
+    public string ProjectNumber { get; set; } =null!;
+
     [Column(TypeName = "date")]
     public DateTime StartDate { get; set; }
 
     [Column(TypeName = "date")]
-    public DateTime EndtDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     public int CustomerId { get; set; }
     public CustomerEntity Customer { get; set; } = null!;
