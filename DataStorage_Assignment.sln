@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bussines", "Bussines\Bussin
 		{F8EAC254-BCFD-4539-9BBA-2A4C9421AD21} = {F8EAC254-BCFD-4539-9BBA-2A4C9421AD21}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresentationApp", "PresentationApp\PresentationApp.csproj", "{F54EAD79-814E-4388-8EBC-DCA4A05E250F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1530BB36-E2E8-476B-8D5E-77A8D9B703B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F54EAD79-814E-4388-8EBC-DCA4A05E250F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F54EAD79-814E-4388-8EBC-DCA4A05E250F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F54EAD79-814E-4388-8EBC-DCA4A05E250F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F54EAD79-814E-4388-8EBC-DCA4A05E250F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
