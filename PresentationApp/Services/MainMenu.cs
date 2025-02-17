@@ -73,8 +73,6 @@ public class MainMenu(DataContext context)
 
         var model = new ProjectModel();
 
-        Console.Write("Ange projektnummer (P-xxxx): ");
-        model.ProjectNumber = Console.ReadLine()!;
 
         Console.Write("Ange projekttitel: ");
         model.Title = Console.ReadLine()!;
@@ -198,13 +196,6 @@ public class MainMenu(DataContext context)
         var newEndDateInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newEndDateInput) && DateTime.TryParse(newEndDateInput, out var newEndDate))
             existingProject.EndDate = newEndDate;
-
-        // Projektnummer
-        Console.WriteLine($"Nuvarande projektnummer: {existingProject.ProjectNumber}");
-        Console.Write("Nytt projektnummer (lämna tom för att behålla): ");
-        var newProjectNumber = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(newProjectNumber))
-            existingProject.ProjectNumber = newProjectNumber;
 
         // Produktnamn
         Console.WriteLine($"Nuvarande produktnamn: {existingProject.Product.ProductName}");

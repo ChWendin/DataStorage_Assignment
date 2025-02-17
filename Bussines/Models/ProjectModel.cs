@@ -5,7 +5,6 @@ namespace Bussines.Models;
 public class ProjectModel
 {
     public string Title { get; set; } = null!;
-    public string ProjectNumber { get; set; } = null!;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public string StatusName { get; set; } = null!;

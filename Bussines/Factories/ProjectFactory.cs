@@ -19,7 +19,6 @@ public static class ProjectFactory
         var project = new ProjectEntity
         {
             Title = model.Title,
-            ProjectNumber = model.ProjectNumber,
             StartDate = model.StartDate,
             EndDate = model.EndDate,
 

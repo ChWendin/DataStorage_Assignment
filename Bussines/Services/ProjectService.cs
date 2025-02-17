@@ -74,7 +74,6 @@ public class ProjectService(DataContext context) : IProjectService
         existingProject.Title = updatedProject.Title;
         existingProject.StartDate = updatedProject.StartDate;
         existingProject.EndDate = updatedProject.EndDate;
-        existingProject.ProjectNumber = updatedProject.ProjectNumber;
         existingProject.Status.StatusName = updatedProject.Status.StatusName;
         existingProject.Product.ProductName = updatedProject.Product.ProductName;
         existingProject.Product.Price = updatedProject.Product.Price;

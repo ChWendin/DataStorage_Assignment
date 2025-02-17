@@ -8,7 +8,7 @@ using Bussines.Services;
 
 
     var serviceCollection = new ServiceCollection();
-    serviceCollection.AddDbContext<DataContext>(options => options.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Projects\\DataStorage_Assignment\\Data\\Databases\\Local_Database.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True"));
+    serviceCollection.AddDbContext<DataContext>(options => options.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Projects\\DataStorage_Assignment\\Data\\Databases\\Local_db.mdf;Integrated Security=True;Connect Timeout=30"));
     serviceCollection.AddScoped<IProjectService, ProjectService>();
     serviceCollection.AddScoped<MainMenu>();
 

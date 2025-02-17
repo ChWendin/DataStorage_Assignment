@@ -17,7 +17,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CustomerName = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,8 +30,8 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    ProductName = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,7 +44,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StatusName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    StatusName = table.Column<string>(type: "NVARCHAR(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,10 +57,10 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserRole = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FirstName = table.Column<string>(type: "NVARCHAR(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "NVARCHAR(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "NVARCHAR(100)", nullable: false),
+                    UserRole = table.Column<string>(type: "NVARCHAR(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,10 +73,9 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProjectNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "date", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Title = table.Column<string>(type: "NVARCHAR(150)", maxLength: 150, nullable: false),
+                    StartDate = table.Column<DateTime>(type: "DATE", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "DATE", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
