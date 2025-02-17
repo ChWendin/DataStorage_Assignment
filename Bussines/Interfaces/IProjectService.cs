@@ -1,13 +1,14 @@
-﻿using Data.Entities;
+﻿using Bussines.Models;
+using Data.Entities;
 
 namespace Bussines.Interfaces
 {
     public interface IProjectService
     {
-        ProjectEntity CreateProject(ProjectEntity projectEntity);
-        bool DeleteProjectById(int id);
-        IEnumerable<ProjectEntity> GetAllProjects();
-        ProjectEntity GetProjectById(int id);
-        ProjectEntity UpdateProject(ProjectEntity projectEntity);
+        Task<ProjectEntity> CreateProjectAsync(ProjectModel model);
+        Task<bool> DeleteProjectAsync(int id);
+        Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync();
+        Task<ProjectEntity> GetProjectByIdAsync(int id);
+        Task<bool> UpdateProjectAsync(int id, ProjectEntity updatedProject);
     }
 }
