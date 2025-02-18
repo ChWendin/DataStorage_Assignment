@@ -15,6 +15,7 @@ public class ProjectService(DataContext context) : IProjectService
 
     public async Task<ProjectEntity> CreateProjectAsync(ProjectModel model)
     {
+            if (model == null) throw new ArgumentNullException(nameof(model));
 
             var project = ProjectFactory.CreateProject(model);
 
@@ -36,27 +37,29 @@ public class ProjectService(DataContext context) : IProjectService
     }
 
 
-    public async Task<ProjectEntity> GetProjectByIdAsync(int id)
+    public async Task<ProjectEntity?> GetProjectByIdAsync(int id)
     {
-        var project = await _context.Projects
-
-            .Include(p => p.Customer)
-            .Include(p => p.Product)
-            .Include(p => p.Status)
-            .Include(p => p.User)
-            .FirstOrDefaultAsync(p => p.Id == id);
-
-        if (project == null)
+        try
         {
-            throw new Exception($"Projekt-ID {id} hittades inte.");
+            return await _context.Projects
+                .Include(p => p.Customer)
+                .Include(p => p.Product)
+                .Include(p => p.Status)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
-
-        return project;
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fel vid hämtning av projekt: {ex.Message}");
+            return null;
+        }
     }
 
     public async Task<bool> UpdateProjectAsync(int id, ProjectEntity updatedProject)
     {
-        // Hämta det befintliga projektet från databasen
+        if (updatedProject == null)
+            throw new ArgumentNullException(nameof(updatedProject), "Det uppdaterade projektet får inte vara null.");
+
         var existingProject = await _context.Projects
             .Include(p => p.Customer)
             .Include(p => p.Product)
@@ -64,32 +67,59 @@ public class ProjectService(DataContext context) : IProjectService
             .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-        // Kontrollera om projektet finns
         if (existingProject == null)
+            return false;
+
+        // Uppdatera endast om nytt värde fylls i
+        if (!string.IsNullOrWhiteSpace(updatedProject.Title))
+            existingProject.Title = updatedProject.Title;
+
+        if (updatedProject.StartDate != default)
+            existingProject.StartDate = updatedProject.StartDate;
+
+        if (updatedProject.EndDate != default)
+            existingProject.EndDate = updatedProject.EndDate;
+
+        if (!string.IsNullOrWhiteSpace(updatedProject.Status.StatusName))
         {
-            return false; // Projekt hittades inte
+            var status = await _context.StatusTypes.FirstOrDefaultAsync(s => s.StatusName == updatedProject.Status.StatusName);
+            if (status != null)
+                existingProject.Status = status;
         }
 
-        // Uppdatera fält
-        existingProject.Title = updatedProject.Title;
-        existingProject.StartDate = updatedProject.StartDate;
-        existingProject.EndDate = updatedProject.EndDate;
-        existingProject.Status.StatusName = updatedProject.Status.StatusName;
-        existingProject.Product.ProductName = updatedProject.Product.ProductName;
-        existingProject.Product.Price = updatedProject.Product.Price;
-        existingProject.Customer.CustomerName = updatedProject.Customer.CustomerName;
-        existingProject.User.FirstName = updatedProject.User.FirstName;
-        existingProject.User.LastName = updatedProject.User.LastName;
-        existingProject.User.Email = updatedProject.User.Email;
-        existingProject.User.UserRole = updatedProject.User.UserRole;
+        if (!string.IsNullOrWhiteSpace(updatedProject.Customer.CustomerName))
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerName == updatedProject.Customer.CustomerName);
+            if (customer != null)
+                existingProject.Customer = customer;
+        }
 
-        // Spara ändringarna i databasen
+        if (!string.IsNullOrWhiteSpace(updatedProject.Product.ProductName))
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == updatedProject.Product.ProductName);
+            if (product != null)
+            {
+                existingProject.Product = product;
+                existingProject.Product.Price = updatedProject.Product.Price;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(updatedProject.User.FirstName) || !string.IsNullOrWhiteSpace(updatedProject.User.LastName))
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == updatedProject.User.Email);
+            if (user != null)
+            {
+                existingProject.User = user;
+                existingProject.User.FirstName = updatedProject.User.FirstName;
+                existingProject.User.LastName = updatedProject.User.LastName;
+            }
+        }
+
         await _context.SaveChangesAsync();
-
-        return true; // Uppdatering lyckades
+        return true;
     }
 
-   
+
 
     public async Task<bool> DeleteProjectAsync(int id)
     {

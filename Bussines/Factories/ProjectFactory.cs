@@ -31,20 +31,4 @@ public static class ProjectFactory
         return project;
     }
 
-    //public IEnumerable<ProjectModel> Create(IEnumerable<ProjectEntity> projectEntities)
-    //{
-    //    if (projectEntities == null)
-    //        throw new ArgumentNullException(nameof(projectEntities));
-
-    //    return projectEntities.Select(projectEntity => new ProjectModel
-    //    {
-    //        Id = projectEntity.Id,
-    //        Name = projectEntity.Name,
-    //        CustomerName = projectEntity.Customer?.Name ?? "Unknown Customer",
-    //        ProductName = projectEntity.Product?.Name ?? "Unknown Product",
-    //        StatusName = projectEntity.Status?.Name ?? "Unknown Status",
-    //        UserName = projectEntity.User?.Name ?? "Unknown User"
-    //    }).ToList();
-    //}
-
 }
