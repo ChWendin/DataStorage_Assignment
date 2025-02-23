@@ -29,7 +29,7 @@ namespace PresentationApp.Services
             Console.Write("Ange produktnamn: ");
             model.ProductName = Console.ReadLine()!;
 
-            Console.Write("Ange produktpris: ");
+            Console.Write("Ange totalpris: ");
             model.Price = decimal.Parse(Console.ReadLine()!);
 
             Console.Write("Ange status: ");
@@ -49,7 +49,7 @@ namespace PresentationApp.Services
 
             var createdProject = await projectService.CreateProjectAsync(model);
 
-            Console.WriteLine($"Projekt '{createdProject.Title}' skapades framgångsrikt!");
+            Console.WriteLine($"Projekt '{createdProject!.Title}' skapades framgångsrikt!");
             Console.WriteLine("Tryck på valfri knapp för att fortsätta...");
             Console.ReadKey();
         }
@@ -64,10 +64,11 @@ namespace PresentationApp.Services
             foreach (var project in projects)
             {
                 Console.WriteLine($"Projekt-ID: {project.Id}, Titel: {project.Title}");
-                Console.WriteLine($"Status: {project.Status.StatusName}, Start: {project.StartDate.ToShortDateString()}, Slut: {project.EndDate.ToShortDateString()}");
+                Console.WriteLine($"Start: {project.StartDate.ToShortDateString()}, Slut: {project.EndDate.ToShortDateString()}, {project.Status.StatusName}");
                 Console.WriteLine($"Kund: {project.Customer.CustomerName}");
                 Console.WriteLine($"Produkt: {project.Product.ProductName}, Pris: {project.Product.Price} SEK");
                 Console.WriteLine($"Ansvarig: {project.User.FirstName} {project.User.LastName}, E-post: {project.User.Email}");
+                Console.WriteLine($"Användarroll: {project.User.UserRole}");
                 Console.WriteLine("");
             }
 
@@ -94,10 +95,11 @@ namespace PresentationApp.Services
             else
             {
                 Console.WriteLine($"Projekt-ID: {project.Id}, Titel: {project.Title}");
-                Console.WriteLine($"Status: {(project.Status?.StatusName ?? "Ej angivet")}, Start: {project.StartDate.ToShortDateString()}, Slut: {project.EndDate.ToShortDateString()}");
+                Console.WriteLine($"Start: {project.StartDate.ToShortDateString()}, Slut: {project.EndDate.ToShortDateString()}, Status: {(project.Status?.StatusName ?? "Ej angivet")}");
                 Console.WriteLine($"Kund: {(project.Customer?.CustomerName ?? "Ej angiven")}");
                 Console.WriteLine($"Produkt: {(project.Product?.ProductName ?? "Ej angiven")}, Pris: {(project.Product?.Price.ToString() ?? "Ej angivet")} SEK");
                 Console.WriteLine($"Ansvarig: {(project.User?.FirstName ?? "Ej angivet")} {(project.User?.LastName ?? "Ej angivet")}, E-post: {(project.User?.Email ?? "Ej angiven")}");
+                Console.WriteLine($"Användarroll: {(project.User?.UserRole ?? "Ej angivet")}");
             }
 
             Console.WriteLine("Tryck på valfri knapp för att fortsätta...");
@@ -173,6 +175,11 @@ namespace PresentationApp.Services
             var newEmail = Console.ReadLine();
             if (!string.IsNullOrWhiteSpace(newEmail))
                 project.User.Email = newEmail;
+
+            Console.Write($"Ny användarroll (Nuvarande: {project.User.UserRole}): ");
+            var newUserrole = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newUserrole))
+                project.User.UserRole = newUserrole;
 
             bool success = await projectService.UpdateProjectAsync(id, project);
 

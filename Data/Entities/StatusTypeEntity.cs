@@ -7,7 +7,7 @@ namespace Data.Entities;
 public class StatusTypeEntity
 {
     [Key]
-    public int Id { get; set; }
+    public int StatusId { get; set; }
     
     [Required]
     [StringLength(50, ErrorMessage = "Status name cannot exceed 50 characters.")]

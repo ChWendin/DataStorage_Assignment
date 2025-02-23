@@ -7,7 +7,7 @@ namespace Data.Entities;
 public class UserEntity
 {
     [Key]
-    public int Id { get; set; }
+    public int UserId { get; set; }
    
     [Required]
     [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters.")]

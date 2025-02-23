@@ -5,6 +5,7 @@ using Data.Contexts;
 using Data.Entities;
 using Bussines.Factories;
 using Microsoft.EntityFrameworkCore;
+using Data.Repositories;
 
 namespace Bussines.Services;
 
@@ -15,14 +16,14 @@ public class ProjectService(DataContext context) : IProjectService
 
     public async Task<ProjectEntity> CreateProjectAsync(ProjectModel model)
     {
-            if (model == null) throw new ArgumentNullException(nameof(model));
+        if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var project = ProjectFactory.CreateProject(model);
+        var project = ProjectFactory.CreateProject(model);
 
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
+        _context.Projects.Add(project);
+        await _context.SaveChangesAsync();
 
-            return project;
+        return project;
     }
 
     public async Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync()
@@ -35,6 +36,18 @@ public class ProjectService(DataContext context) : IProjectService
 
             .ToListAsync();
     }
+
+    //public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
+    //{
+    //    var projects = await _projectRepository.GetAllIncludingAsync(p => p.Status, p => p.Customer, p => p.Product, p => p.User);
+    //    return projects.Select(ProjectFactory.MapToModel)!;
+    //}
+
+    //public async Task<ProjectModel> GetProjectByIdAsync(int id)
+    //{
+    //    var project = await _projectRepository.GetIncludingAsync(p => p.Id == id, p => p.Status, p => p.Customer, p => p.Product, p => p.User);
+    //    return ProjectFactory.MapToModel(project!)!;
+    //}
 
 
     public async Task<ProjectEntity?> GetProjectByIdAsync(int id)

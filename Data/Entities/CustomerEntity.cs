@@ -8,7 +8,7 @@ namespace Data.Entities;
 public class CustomerEntity
 {
     [Key]
-    public int Id { get; set; }
+    public int CustomerId { get; set; }
    
     [Required]
     [StringLength(100, ErrorMessage = "Customer name cannot exceed 100 characters.")]
