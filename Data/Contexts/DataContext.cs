@@ -17,29 +17,29 @@ public class DataContext : DbContext
         // Relation mellan ProjectEntity och StatusTypeEntity
         modelBuilder.Entity<ProjectEntity>()
             .HasOne(p => p.Status)
-            .WithMany() // Om StatusType kan vara associerad med flera ProjectEntities
-            .HasForeignKey(p => p.StatusId)
-            .OnDelete(DeleteBehavior.Cascade); // Exempel på delete behavior
+            .WithOne() // Om StatusType kan vara associerad med flera ProjectEntities
+            .HasForeignKey<ProjectEntity>(p => p.StatusId)
+            .OnDelete(DeleteBehavior.SetNull); // Exempel på delete behavior
 
         // Relation mellan ProjectEntity och CustomerEntity
         modelBuilder.Entity<ProjectEntity>()
             .HasOne(p => p.Customer)
-            .WithMany() // Om Customer kan vara associerad med flera ProjectEntities
-            .HasForeignKey(p => p.CustomerId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithOne() // Om Customer kan vara associerad med flera ProjectEntities
+            .HasForeignKey<ProjectEntity>(p => p.CustomerId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Relation mellan ProjectEntity och ProductEntity
         modelBuilder.Entity<ProjectEntity>()
             .HasOne(p => p.Product)
-            .WithMany() // Om Product kan vara associerad med flera ProjectEntities
-            .HasForeignKey(p => p.ProductId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithOne() // Om Product kan vara associerad med flera ProjectEntities
+            .HasForeignKey<ProjectEntity>(p => p.ProductId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Relation mellan ProjectEntity och UserEntity
         modelBuilder.Entity<ProjectEntity>()
             .HasOne(p => p.User)
-            .WithMany() // Om User kan vara associerad med flera ProjectEntities
-            .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithOne() // Om User kan vara associerad med flera ProjectEntities
+            .HasForeignKey<ProjectEntity>(p => p.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

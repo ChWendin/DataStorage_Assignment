@@ -21,19 +21,19 @@ public class ProjectEntity
 
     //Foreign keys
     [Required]
-    public int CustomerId { get; set; }
+    public int? CustomerId { get; set; }
     public CustomerEntity Customer { get; set; } = null!;
 
     [Required]
-    public int ProductId { get; set; }
+    public int? ProductId { get; set; }
     public ProductEntity Product { get; set; } = null!;
 
     [Required]
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
     public UserEntity User { get; set; } = null!;
 
     [Required]
-    public int StatusId { get; set; }
+    public int? StatusId { get; set; }
     public StatusTypeEntity Status { get; set; } = null!;
 }
 

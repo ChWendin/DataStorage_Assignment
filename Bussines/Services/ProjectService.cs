@@ -6,84 +6,55 @@ using Data.Entities;
 using Bussines.Factories;
 using Microsoft.EntityFrameworkCore;
 using Data.Repositories;
+using Data.Interfaces;
 
 namespace Bussines.Services;
 
-public class ProjectService(DataContext context) : IProjectService
+public class ProjectService(
+    IBaseRepository<ProjectEntity> projectRepository,
+    IBaseRepository<StatusTypeEntity> statusRepository,
+    IBaseRepository<ProductEntity> productRepository,
+    IBaseRepository<UserEntity> userRepository,
+    IBaseRepository<CustomerEntity> customerRepository
+) : IProjectService
 {
-    private readonly DataContext _context = context;
-
+    private readonly IBaseRepository<ProjectEntity> _projectRepository = projectRepository;
+    private readonly IBaseRepository<StatusTypeEntity> _statusRepository = statusRepository;
+    private readonly IBaseRepository<ProductEntity> _productRepository = productRepository;
+    private readonly IBaseRepository<UserEntity> _userRepository = userRepository;
+    private readonly IBaseRepository<CustomerEntity> _customerRepository = customerRepository;
 
     public async Task<ProjectEntity> CreateProjectAsync(ProjectModel model)
     {
         if (model == null) throw new ArgumentNullException(nameof(model));
 
         var project = ProjectFactory.CreateProject(model);
-
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
+        await _projectRepository.AddAsync(project);
 
         return project;
     }
 
     public async Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync()
     {
-        return await _context.Projects
-            .Include(p => p.Customer)
-            .Include(p => p.Product)
-            .Include(p => p.Status)
-            .Include(p => p.User)
-
-            .ToListAsync();
+        return await _projectRepository.GetAllIncludingAsync(p => p.Customer, p => p.Product, p => p.Status, p => p.User);
     }
-
-    //public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
-    //{
-    //    var projects = await _projectRepository.GetAllIncludingAsync(p => p.Status, p => p.Customer, p => p.Product, p => p.User);
-    //    return projects.Select(ProjectFactory.MapToModel)!;
-    //}
-
-    //public async Task<ProjectModel> GetProjectByIdAsync(int id)
-    //{
-    //    var project = await _projectRepository.GetIncludingAsync(p => p.Id == id, p => p.Status, p => p.Customer, p => p.Product, p => p.User);
-    //    return ProjectFactory.MapToModel(project!)!;
-    //}
-
 
     public async Task<ProjectEntity?> GetProjectByIdAsync(int id)
     {
-        try
-        {
-            return await _context.Projects
-                .Include(p => p.Customer)
-                .Include(p => p.Product)
-                .Include(p => p.Status)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Fel vid hämtning av projekt: {ex.Message}");
-            return null;
-        }
+        return await _projectRepository.GetIncludingAsync(p => p.Id == id, p => p.Customer, p => p.Product, p => p.Status, p => p.User);
     }
+
 
     public async Task<bool> UpdateProjectAsync(int id, ProjectEntity updatedProject)
     {
         if (updatedProject == null)
-            throw new ArgumentNullException(nameof(updatedProject), "Det uppdaterade projektet får inte vara null.");
+            throw new ArgumentNullException(nameof(updatedProject));
 
-        var existingProject = await _context.Projects
-            .Include(p => p.Customer)
-            .Include(p => p.Product)
-            .Include(p => p.Status)
-            .Include(p => p.User)
-            .FirstOrDefaultAsync(p => p.Id == id);
-
+        var existingProject = await _projectRepository.GetIncludingAsync(p => p.Id == id, p => p.Customer, p => p.Product, p => p.Status, p => p.User);
         if (existingProject == null)
             return false;
 
-        // Uppdatera endast om nytt värde fylls i
+        // Uppdatera endast om nytt värde är satt
         if (!string.IsNullOrWhiteSpace(updatedProject.Title))
             existingProject.Title = updatedProject.Title;
 
@@ -93,23 +64,18 @@ public class ProjectService(DataContext context) : IProjectService
         if (updatedProject.EndDate != default)
             existingProject.EndDate = updatedProject.EndDate;
 
+        // Uppdatera Status
         if (!string.IsNullOrWhiteSpace(updatedProject.Status.StatusName))
         {
-            var status = await _context.StatusTypes.FirstOrDefaultAsync(s => s.StatusName == updatedProject.Status.StatusName);
+            var status = await _statusRepository.GetAsync(s => s.StatusName == updatedProject.Status.StatusName);
             if (status != null)
                 existingProject.Status = status;
         }
 
-        if (!string.IsNullOrWhiteSpace(updatedProject.Customer.CustomerName))
-        {
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerName == updatedProject.Customer.CustomerName);
-            if (customer != null)
-                existingProject.Customer = customer;
-        }
-
+        // Uppdatera Product
         if (!string.IsNullOrWhiteSpace(updatedProject.Product.ProductName))
         {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == updatedProject.Product.ProductName);
+            var product = await _productRepository.GetAsync(p => p.ProductName == updatedProject.Product.ProductName);
             if (product != null)
             {
                 existingProject.Product = product;
@@ -117,9 +83,10 @@ public class ProjectService(DataContext context) : IProjectService
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(updatedProject.User.FirstName) || !string.IsNullOrWhiteSpace(updatedProject.User.LastName))
+        // Uppdatera User
+        if (!string.IsNullOrWhiteSpace(updatedProject.User.Email))
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == updatedProject.User.Email);
+            var user = await _userRepository.GetAsync(u => u.Email == updatedProject.User.Email);
             if (user != null)
             {
                 existingProject.User = user;
@@ -128,7 +95,7 @@ public class ProjectService(DataContext context) : IProjectService
             }
         }
 
-        await _context.SaveChangesAsync();
+        await _projectRepository.UpdateAsync(existingProject);
         return true;
     }
 
@@ -136,19 +103,33 @@ public class ProjectService(DataContext context) : IProjectService
 
     public async Task<bool> DeleteProjectAsync(int id)
     {
-        var project = await _context.Projects
-            .Include(p => p.Customer)
-            .Include(p => p.Product)
-            .Include(p => p.Status)
-            .Include(p => p.User)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var project = await _projectRepository.GetIncludingAsync(
+            p => p.Id == id,
+            p => p.Customer,
+            p => p.Product,
+            p => p.Status,
+            p => p.User
+        );
 
         if (project == null)
             return false;
 
-        // Ta bort projektet
-        _context.Projects.Remove(project);
-        await _context.SaveChangesAsync();
+        // Radera de relaterade entiteter, om de finns
+        if (project.Customer != null)
+            await _customerRepository.RemoveAsync(project.Customer);
+
+        if (project.Product != null)
+            await _productRepository.RemoveAsync(project.Product);
+
+        if (project.Status != null)
+            await _statusRepository.RemoveAsync(project.Status);
+
+        if (project.User != null)
+            await _userRepository.RemoveAsync(project.User);
+
+        // Radera projektet sist
+        await _projectRepository.RemoveAsync(project);
+
         return true;
     }
 }
