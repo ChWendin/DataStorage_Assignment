@@ -18,10 +18,20 @@ namespace PresentationApp.Services
             model.Title = Console.ReadLine()!;
 
             Console.Write("Ange startdatum (yyyy-mm-dd): ");
-            model.StartDate = DateTime.Parse(Console.ReadLine()!);
+            DateTime startDate;
+            while (!DateTime.TryParse(Console.ReadLine(), out startDate))
+            {
+                Console.WriteLine("Felaktigt format! Ange startdatum i formatet yyyy-mm-dd:");
+            }
+            model.StartDate = startDate;
 
             Console.Write("Ange slutdatum (yyyy-mm-dd): ");
-            model.EndDate = DateTime.Parse(Console.ReadLine()!);
+            DateTime endDate;
+            while (!DateTime.TryParse(Console.ReadLine(), out endDate))
+            {
+                Console.WriteLine("Felaktigt format! Ange slutdatum i formatet yyyy-mm-dd:");
+            }
+            model.EndDate = endDate;
 
             Console.Write("Ange kundnamn: ");
             model.CustomerName = Console.ReadLine()!;

@@ -11,23 +11,38 @@ public class ProjectService : IProjectService
 {
     private readonly IBaseRepository<ProjectEntity> _projectRepository;
     private readonly ProjectRelatedEntitiesService _relatedEntitiesService;
+    private readonly ITransactionService _transactionService;
+
     public ProjectService(
         IBaseRepository<ProjectEntity> projectRepository,
-        ProjectRelatedEntitiesService relatedEntitiesService
+        ProjectRelatedEntitiesService relatedEntitiesService,
+        ITransactionService transactionService
     )
     {
         _projectRepository = projectRepository;
         _relatedEntitiesService = relatedEntitiesService;
+        _transactionService = transactionService;
     }
 
     public async Task<ProjectEntity> CreateProjectAsync(ProjectModel model)
     {
         if (model == null) throw new ArgumentNullException(nameof(model));
 
-        var project = ProjectFactory.CreateProject(model);
-        await _projectRepository.AddAsync(project);
+        await _transactionService.BeginTransactionAsync(); 
 
-        return project;
+        try
+        {
+            var project = ProjectFactory.CreateProject(model);
+            await _projectRepository.AddAsync(project);
+
+            await _transactionService.CommitAsync(); 
+            return project;
+        }
+        catch
+        {
+            await _transactionService.RollbackAsync(); 
+            throw;
+        }
     }
 
     public async Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync()
@@ -46,37 +61,56 @@ public class ProjectService : IProjectService
         if (updatedProject == null)
             throw new ArgumentNullException(nameof(updatedProject));
 
-        var existingProject = await _projectRepository.GetIncludingAsync(p => p.Id == id, p => p.Customer, p => p.Product, p => p.Status, p => p.User);
-        if (existingProject == null)
-            return false;
+        await _transactionService.BeginTransactionAsync(); 
 
-        await _relatedEntitiesService.UpdateRelatedEntitiesAsync(existingProject, updatedProject);
+        try
+        {
+            var existingProject = await _projectRepository.GetIncludingAsync(p => p.Id == id, p => p.Customer, p => p.Product, p => p.Status, p => p.User);
+            if (existingProject == null)
+                return false;
 
-        await _projectRepository.UpdateAsync(existingProject);
-        return true;
+            await _relatedEntitiesService.UpdateRelatedEntitiesAsync(existingProject, updatedProject);
+            await _projectRepository.UpdateAsync(existingProject);
+
+            await _transactionService.CommitAsync(); 
+            return true;
+        }
+        catch
+        {
+            await _transactionService.RollbackAsync(); 
+            throw;
+        }
     }
 
 
 
     public async Task<bool> DeleteProjectAsync(int id)
     {
-        var project = await _projectRepository.GetIncludingAsync(
-            p => p.Id == id,
-            p => p.Customer,
-            p => p.Product,
-            p => p.Status,
-            p => p.User
-        );
+        await _transactionService.BeginTransactionAsync(); // Starta transaktion
 
-        if (project == null)
-            return false;
+        try
+        {
+            var project = await _projectRepository.GetIncludingAsync(
+                p => p.Id == id,
+                p => p.Customer,
+                p => p.Product,
+                p => p.Status,
+                p => p.User
+            );
 
-        // Ta bort relaterade entiteter
-        await _relatedEntitiesService.DeleteRelatedEntitiesAsync(project);
+            if (project == null)
+                return false;
 
-        // Ta bort projektet
-        await _projectRepository.RemoveAsync(project);
+            await _relatedEntitiesService.DeleteRelatedEntitiesAsync(project);
+            await _projectRepository.RemoveAsync(project);
 
-        return true;
+            await _transactionService.CommitAsync(); // Bekräfta raderingen
+            return true;
+        }
+        catch
+        {
+            await _transactionService.RollbackAsync(); // Rulla tillbaka vid fel
+            throw;
+        }
     }
 }

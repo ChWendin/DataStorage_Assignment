@@ -15,6 +15,8 @@ serviceCollection.AddDbContext<DataContext>(options =>
 serviceCollection.AddScoped<IProjectService, ProjectService>();
 serviceCollection.AddScoped<ProjectRelatedEntitiesService>();
 
+serviceCollection.AddScoped<ITransactionService, TransactionService>();
+
 serviceCollection.AddScoped<MainMenu>();
 serviceCollection.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 serviceCollection.AddScoped<IBaseRepository<StatusTypeEntity>, BaseRepository<StatusTypeEntity>>();
