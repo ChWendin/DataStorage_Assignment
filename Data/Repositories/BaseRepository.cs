@@ -1,7 +1,6 @@
 ﻿
 
 
-using Data.Contexts;
 using Data.Entities;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +51,7 @@ namespace Data.Repositories
             if (existingEntity == null)
                 throw new InvalidOperationException("Entity not found in database.");
 
-            // Explicit uppdatering av relaterade entiteter
+            // uppdatering av relaterade entiteter
             if (existingEntity is ProjectEntity projectEntity && entity is ProjectEntity updateEntity)
             {
                 // Uppdatera Status
@@ -64,7 +63,7 @@ namespace Data.Repositories
                     {
                         _context.Attach(existingStatus);
                         projectEntity.StatusId = existingStatus.StatusId;
-                        projectEntity.Status = existingStatus;  // Viktigt!
+                        projectEntity.Status = existingStatus;  
                     }
                 }
 
@@ -77,7 +76,7 @@ namespace Data.Repositories
                     {
                         _context.Attach(existingCustomer);
                         projectEntity.CustomerId = existingCustomer.CustomerId;
-                        projectEntity.Customer = existingCustomer;  // Viktigt!
+                        projectEntity.Customer = existingCustomer;  
                     }
                 }
 
@@ -90,7 +89,7 @@ namespace Data.Repositories
                     {
                         _context.Attach(existingProduct);
                         projectEntity.ProductId = existingProduct.ProductId;
-                        projectEntity.Product = existingProduct;  // Viktigt!
+                        projectEntity.Product = existingProduct; 
                     }
                 }
 
@@ -103,7 +102,7 @@ namespace Data.Repositories
                     {
                         _context.Attach(existingUser);
                         projectEntity.UserId = existingUser.UserId;
-                        projectEntity.User = existingUser;  // Viktigt!
+                        projectEntity.User = existingUser;  
                     }
                 }
 
